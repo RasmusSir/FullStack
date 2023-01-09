@@ -1,0 +1,8 @@
+selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa [{ content: "HTML on helppoa", date: "2023-01-01" }]
+palvelin-->selain: Status Code: 201 created
+
+note over selain:
+JSON muodossa oleva data on lähetetty palvelimelle, 
+palvelin on kertonut että status on 201, eli tieto on pistetty täytäntöön,
+lopuksi lista piirtyy/päivittyy uudelleen käyttäjän ruudulle
+end note
