@@ -1,3 +1,6 @@
+HUOM: Tämä sekvenssikaavio on tehty FullStack Open 2022 materiaalin pohjalta
+
+
 selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
 palvelin-->selain: HTTP-status 302 (Redirect)
 selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
