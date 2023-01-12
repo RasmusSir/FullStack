@@ -8,6 +8,7 @@ const Person = ({ person, number }) => {
   )
 }
 
+
 // Filter komponentti
 const Filter = (props) => {
   return(
@@ -39,7 +40,6 @@ const PersonForm = (props) => {
       </div>
 
     </form>
-
   )
 
   }
@@ -91,24 +91,25 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  const filterFunction = persons.filter((person) => 
+  person.name.toLowerCase().includes(newFilter.toLowerCase()))
+
 
   return (
     <div>
       <h2>Phonebook</h2>
         <Filter filter={newFilter} filterChange={handleFilterChange}/>
-        <p>Jees elikkä {newFilter}</p>
       <h2>add a new</h2>
         <PersonForm submit={addName} name={newName} nameChange={handleNameChange}
         number={newNumber} numberChange={handleNumberChange}/>
 
       <h2>Numbers</h2>
-        {persons.map(person => 
+        {filterFunction.map(person => 
         <Person key={person.name} person={person.name} number={person.number}/>
         )}
 
     </div>
   )
-
 }
 
 export default App
