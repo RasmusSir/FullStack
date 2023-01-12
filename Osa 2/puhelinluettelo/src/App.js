@@ -1,5 +1,5 @@
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 // Person komponentti
 const Person = ({ person, number }) => {
@@ -54,6 +54,16 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
 
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        console.log('promise fulfilled')
+        setPersons(response.data)
+      })
+  }, [])
+  console.log('render', persons.length, 'persons')
 
 
   // Funktio personin lisäämiseen
