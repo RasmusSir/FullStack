@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 // Person komponentti
-const Person = ({ person, number }) => {
+const Person = ({ person, number, deletePerson}) => {
   return (
-    <p>{person} {number}</p>
+    <li>
+      {person} {number} <button onClick={() => deletePerson(person.id)}>Delete</button>
+    </li>
+
   )
 }
 
@@ -47,9 +50,7 @@ const PersonForm = (props) => {
 
 // App konstruktori
 const App = () => {
-  const [persons, setPersons] = useState([{ 
-    name: 'Arto Hellas',
-    number: '040-1231244'} ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
@@ -63,7 +64,7 @@ const App = () => {
         setPersons(response.data)
       })
   }, [])
-  console.log('render', persons.length, 'persons')
+  console.log('render', persons.length, 'persons', persons)
 
 
   // Funktio personin lisäämiseen
@@ -80,9 +81,22 @@ const App = () => {
     // lisätään hyödyntämällä setPersonsia
     const willWeAdd = persons.some(person => person.name === newName || console.log("Viilataan kaikki personit läpi",person)) 
                         ? alert(`${newName} is already added`) 
-                        : setPersons(persons.concat(nameObject))
-    setNewName('')
-    setNewNumber('')
+                        :axios
+                          .post('http://localhost:3001/persons', nameObject)
+                          .then(response => {
+                            console.log(response)
+                            setPersons(persons.concat(nameObject))
+                          })
+                          //setNewName('')
+                          //setNewNumber('')
+  }
+
+  const deletePerson = (id) => {
+    console.log('Removing' + id + 'permanently')
+    axios.delete(`http://localhost:3001/persons/${id}`)
+    .then(response => {
+      setPersons(persons.filter(personsLeft => personsLeft.id !== id))
+    })
   }
 
   // Funktio siihen, että newName päivittyy oikein jotta se voidaan lähettää addName funktioon oikein
@@ -115,7 +129,8 @@ const App = () => {
 
       <h2>Numbers</h2>
         {filterFunction.map(person => 
-        <Person key={person.name} person={person.name} number={person.number}/>
+        <Person key={person.name} person={person.name} number={person.number} 
+        deletePerson={()=> deletePerson(person.id)}/>
         )}
 
     </div>
