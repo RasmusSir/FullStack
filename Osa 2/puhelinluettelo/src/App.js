@@ -1,11 +1,18 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import noteService from './services/persons'
 
 // Person komponentti
 const Person = ({ person, number, deletePerson}) => {
+  const confirmMessage = () => {
+   if (window.confirm(`Delete ${person} ?`)){
+    deletePerson(person.id)
+   }
+  } 
+
   return (
     <li>
-      {person} {number} <button onClick={() => deletePerson(person.id)}>Delete</button>
+      {person} {number} <button onClick={confirmMessage}>Delete</button>
     </li>
 
   )
@@ -54,17 +61,14 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-
+  
   useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
+    noteService
+      .getAll()
       .then(response => {
-        console.log('promise fulfilled')
         setPersons(response.data)
       })
   }, [])
-  console.log('render', persons.length, 'persons', persons)
 
 
   // Funktio personin lisäämiseen
@@ -81,15 +85,15 @@ const App = () => {
     // lisätään hyödyntämällä setPersonsia
     const willWeAdd = persons.some(person => person.name === newName || console.log("Viilataan kaikki personit läpi",person)) 
                         ? alert(`${newName} is already added`) 
-                        :axios
-                          .post('http://localhost:3001/persons', nameObject)
-                          .then(response => {
-                            console.log(response)
-                            setPersons(persons.concat(nameObject))
-                          })
-                          //setNewName('')
-                          //setNewNumber('')
+                        :noteService
+                        .create(nameObject)
+                        .then(response => {
+                          setPersons(persons.concat(response.data))
+                          setNewName('')
+                          setNewNumber('')
+                        })
   }
+
 
   const deletePerson = (id) => {
     console.log('Removing' + id + 'permanently')
