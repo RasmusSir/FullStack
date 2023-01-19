@@ -3,16 +3,16 @@ import axios from 'axios'
 import noteService from './services/persons'
 
 // Person komponentti
-const Person = ({ person, number, deletePerson}) => {
+const Person = (props) => {
   const confirmMessage = () => {
-   if (window.confirm(`Delete ${person} ?`)){
-    deletePerson(person.id)
+   if (window.confirm(`Delete ${props.person} ?`)){
+    props.deletePerson({props})
    }
   } 
 
   return (
     <li>
-      {person} {number} <button onClick={confirmMessage}>Delete</button>
+      {props.person} {props.number} <button onClick={confirmMessage}>Delete</button>
     </li>
 
   )
@@ -51,7 +51,25 @@ const PersonForm = (props) => {
 
     </form>
   )
+  }
 
+  const Notification = ({ message, error }) => {
+    if (message === null && error === null) {
+      return null
+    }
+    
+    if (message !== null && error === null){
+      return (
+        <div className="added">
+          {message}
+        </div>)
+    } 
+
+    return(
+      <div className="error">
+        {error}
+      </div>
+    )
   }
   
 
@@ -61,6 +79,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [addedMessage, setAddedMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   
   useEffect(() => {
     noteService
@@ -79,27 +99,64 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    // persons.some(person => person.name) "viilaa" kaikki personit persons listalta läpi ja 
-    // tarkastaa onko yksittäinen person.name sana kuin newName. 
-    // Jos yksikin person.name = newName -> Nimi on jo listalla ja looppi katkeaa, muuten
-    // lisätään hyödyntämällä setPersonsia
-    const willWeAdd = persons.some(person => person.name === newName || console.log("Viilataan kaikki personit läpi",person)) 
-                        ? alert(`${newName} is already added`) 
-                        :noteService
-                        .create(nameObject)
-                        .then(response => {
-                          setPersons(persons.concat(response.data))
-                          setNewName('')
-                          setNewNumber('')
-                        })
+
+    const existingPerson = persons.find(person => person.name === newName)
+    
+    if (existingPerson) {      
+      const changedNumber = {...existingPerson, number: newNumber}
+      console.log('id', existingPerson.id);
+      console.log('note', existingPerson);
+      console.log('changedNote', changedNumber);
+      if (window.confirm(`${newName} is already added, replace the old number with a new one?`)) {
+        noteService
+        .update(existingPerson.id, changedNumber)
+          .then(returnedNumber => {
+            setPersons(persons.map(person => person.id !== existingPerson.id  ? person : returnedNumber))
+            console.log('returnedNote', returnedNumber);
+            setAddedMessage(`Number Changed for ${nameObject.name}`)
+            setNewName('')
+            setNewNumber('')
+            setTimeout(() => {
+            setAddedMessage(null)
+          }, 5000)
+          })
+          .catch(error => {
+            setErrorMessage(
+              `Person '${existingPerson.name}' was already removed from server`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+            setPersons(persons.filter(person => person.id !== existingPerson.id))
+            setNewName('')
+            setNewNumber('')
+          })
+      }
+    } else {
+      noteService
+      .create(nameObject)
+      .then(response => {
+        setAddedMessage(`Added ${nameObject.name}`)
+        setTimeout(() => {
+          setAddedMessage(null)
+        }, 5000)
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNumber('')
+      })
   }
+}
 
 
-  const deletePerson = (id) => {
-    console.log('Removing' + id + 'permanently')
-    axios.delete(`http://localhost:3001/persons/${id}`)
+  const deletePerson = (props) => {
+    console.log(props.name)
+    axios.delete(`http://localhost:3001/persons/${props.id}`)
     .then(response => {
-      setPersons(persons.filter(personsLeft => personsLeft.id !== id))
+      setAddedMessage(`Deleted ${props.name}`)
+      setTimeout(() => {
+        setAddedMessage(null)
+      }, 5000)
+      setPersons(persons.filter(personsLeft => personsLeft.id !== props.id))
     })
   }
 
@@ -119,8 +176,8 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
-  const filterFunction = persons.filter((person) => 
-  person.name.toLowerCase().includes(newFilter.toLowerCase()))
+  const filterFunction = persons.filter((person => 
+    person.name.toLowerCase().includes(newFilter.toLowerCase())))
 
 
   return (
@@ -132,9 +189,10 @@ const App = () => {
         number={newNumber} numberChange={handleNumberChange}/>
 
       <h2>Numbers</h2>
+      <Notification message={addedMessage} error={errorMessage}/>
         {filterFunction.map(person => 
         <Person key={person.name} person={person.name} number={person.number} 
-        deletePerson={()=> deletePerson(person.id)}/>
+        deletePerson={()=> deletePerson(person)}/>
         )}
 
     </div>
