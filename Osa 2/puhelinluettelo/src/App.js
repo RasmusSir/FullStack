@@ -53,9 +53,7 @@ const PersonForm = (props) => {
   )
   }
 
-  const Notification = ({ message, error }) => {
-    console.log('errormessage', error);
-    
+  const Notification = ({ message, error }) => {    
     if (message === null && error === null) {
       return null
     }
@@ -154,7 +152,6 @@ const App = () => {
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
-        setPersons(persons.filter(person => person.id !== existingPerson.id))
         setNewName('')
         setNewNumber('')
       })
