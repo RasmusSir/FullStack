@@ -146,7 +146,7 @@ const App = () => {
         setNewNumber('')
       })
       .catch(error => {
-        console.log('Tämmönen error1', error);
+        console.log('Tällainen error kyseessä', error);
         setErrorMessage(error.response.data.error
         )
         setTimeout(() => {
