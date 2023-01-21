@@ -64,12 +64,13 @@ const PersonForm = (props) => {
           {message}
         </div>)
     } 
-
-    return(
-      <div className="error">
-        {error}
-      </div>
-    )
+    if (error !== null){
+      return(
+        <div className="error">
+          {error}
+        </div>
+      )
+    }
   }
   
 
@@ -107,7 +108,7 @@ const App = () => {
       console.log('id', existingPerson.id);
       console.log('note', existingPerson);
       console.log('changedNote', changedNumber);
-      if (window.confirm(`${newName} is already added, replace the old number with a new one?`)) {
+      if (window.confirm(`${newName} iss already added, replace the old number with a new one?`)) {
         noteService
         .update(existingPerson.id, changedNumber)
           .then(returnedNumber => {
@@ -121,7 +122,7 @@ const App = () => {
           }, 5000)
           })
           .catch(error => {
-            setErrorMessage(
+            setErrorMessage(error.response.data.error,
               `Person '${existingPerson.name}' was already removed from server`
             )
             setTimeout(() => {
