@@ -149,8 +149,10 @@ const App = () => {
 
 
   const deletePerson = (props) => {
-    console.log(props.name)
-    axios.delete(`http://localhost:3001/api/persons/${props.id}`)
+    console.log(props)
+    const id = props.id
+    noteService
+    .deleting(id)
     .then(response => {
       setAddedMessage(`Deleted ${props.name}`)
       setTimeout(() => {
