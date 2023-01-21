@@ -150,7 +150,7 @@ const App = () => {
 
   const deletePerson = (props) => {
     console.log(props.name)
-    axios.delete(`http://localhost:3001/persons/${props.id}`)
+    axios.delete(`http://localhost:3001/api/persons/${props.id}`)
     .then(response => {
       setAddedMessage(`Deleted ${props.name}`)
       setTimeout(() => {
