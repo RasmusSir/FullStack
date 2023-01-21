@@ -110,7 +110,7 @@ const App = () => {
       console.log('id', existingPerson.id);
       console.log('note', existingPerson);
       console.log('changedNote', changedNumber);
-      if (window.confirm(`${newName} iss already added, replace the old number with a new one?`)) {
+      if (window.confirm(`${newName} is already added, replace the old number with a new one?`)) {
         noteService
         .update(existingPerson.id, changedNumber)
           .then(returnedNumber => {
