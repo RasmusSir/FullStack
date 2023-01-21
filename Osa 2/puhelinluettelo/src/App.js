@@ -19,7 +19,7 @@ const Person = (props) => {
 }
 
 
-// Filter komponentti
+// Filter komponentti.
 const Filter = (props) => {
   return(
     <div>
