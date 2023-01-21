@@ -54,6 +54,8 @@ const PersonForm = (props) => {
   }
 
   const Notification = ({ message, error }) => {
+    console.log('errormessage', error);
+    
     if (message === null && error === null) {
       return null
     }
