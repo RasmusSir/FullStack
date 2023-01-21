@@ -124,6 +124,7 @@ const App = () => {
           }, 5000)
           })
           .catch(error => {
+            console.log('Tämmönen error', error);
             setErrorMessage(error.response.data.error
             )
             setTimeout(() => {
@@ -143,6 +144,17 @@ const App = () => {
           setAddedMessage(null)
         }, 5000)
         setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNumber('')
+      })
+      .catch(error => {
+        console.log('Tämmönen error1', error);
+        setErrorMessage(error.response.data.error
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+        setPersons(persons.filter(person => person.id !== existingPerson.id))
         setNewName('')
         setNewNumber('')
       })
