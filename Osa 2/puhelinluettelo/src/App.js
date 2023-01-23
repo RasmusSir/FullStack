@@ -57,7 +57,6 @@ const PersonForm = (props) => {
     if (message === null && error === null) {
       return null
     }
-    
     if (message !== null && error === null){
       return (
         <div className="added">
@@ -146,7 +145,7 @@ const App = () => {
         setNewNumber('')
       })
       .catch(error => {
-        console.log('Tällainen error kyseessä', error);
+        console.log('Tällainen error kyseessä', error.response.data);
         setErrorMessage(error.response.data.error
         )
         setTimeout(() => {
