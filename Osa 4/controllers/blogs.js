@@ -7,6 +7,7 @@ blogsRouter.get('/', (request, response) => {
     .find({})
     .then(blogs => {
       response.json(blogs)
+      console.log('blogit:', blogs);
     })
 })
 
