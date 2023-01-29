@@ -11,7 +11,6 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 
-// Blogin lisääminen (Token)
 
 
 // Blogin lisääminen (Post komento)
