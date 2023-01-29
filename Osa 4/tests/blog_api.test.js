@@ -197,6 +197,40 @@ describe('when there is initially one user at db', () => {
     })
 })
 
+test('4.16 Username and password needs to be at least 3 characters', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const faultyUsername = {
+        username: 'ro',
+        name: 'Superuser1',
+        password: 'sala',
+    }
+    const faultyPassword = {
+        username: 'root',
+        name: 'Superuser2',
+        password: 'sa',
+    }
+
+    const resultUsername = await api
+        .post('/api/users')
+        .send(faultyUsername)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+    expect(resultUsername.body.error).toContain('Username needs to be 3 or more characters')
+
+    const resultPassword = await api
+        .post('/api/users')
+        .send(faultyPassword)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+    expect(resultPassword.body.error).toContain('Password needs to be 3 or more characters')
+
+    // Testataan vielä että usereita ei ole mennyt databaseen
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+})
 
 afterAll(async () => {
     await mongoose.connection.close()

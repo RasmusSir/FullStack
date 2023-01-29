@@ -1,9 +1,9 @@
 POST  http://localhost:3003/api/blogs
 Content-Type: application/json
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhQXzUwIiwiaWQiOiI2M2Q2MmUxYzc5NmQzOTMxODA2YmQyYzQiLCJpYXQiOjE2NzUwMDI5MTZ9.PPAm_ac1Bqaceh3oMCdvBnaChjsjy5NUGHw0-mKf4fY
 
 {
-    "title": "Harry Pottero",
+    "title": "Harry Potteroo",
     "author": "J.K. Rowling",
     "url": "hpandthedeadlyhallows.com",
     "likes": "10",
